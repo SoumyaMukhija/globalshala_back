@@ -25,3 +25,5 @@ singledispatch==3.4.0.3
 six==1.15.0
 toml==0.10.1
 wrapt==1.12.1
+pandas==1.0.5
+scikit-learn==0.23.1
