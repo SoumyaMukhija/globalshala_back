@@ -4,6 +4,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import Lasso
+import pickle
 
 
 def get_dataframe_from_file(file="Admission_Predict_Ver1.1.csv"):
@@ -49,7 +50,9 @@ def get_lasso_regressor(df):
         labels, feature, test_size=0.10)
     r = Lasso()
     r = r.fit(x_train, y_train)
-    return r
+    trained = 'trained_model.sav'
+    pickle.dump(r, open(trained, 'wb'))
+    return trained
 
 
 def get_combined_stats(df):
@@ -80,8 +83,9 @@ if __name__ == '__main__':
     print("Linear", prediction)
     pred_dictionary['linear'] = prediction
 
-    clf = get_lasso_regressor(df)
-    prediction = clf.predict(user_info)
+    trained_file = get_lasso_regressor(df)
+    trained_model = pickle.load(open(trained_file, 'rb'))
+    prediction = trained_model.predict(user_info)
     print("Lasso", prediction)
     pred_dictionary['lasso'] = prediction
 
