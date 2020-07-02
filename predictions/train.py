@@ -19,7 +19,7 @@ def clean_data_in_dataframe(df):
 
 
 def remove_additional_columns(df):
-    return df[['GRE Score', 'TOEFL Score', 'CGPA', 'University Rating', 'Research' 'Chance of Admit ']]
+    return df[['GRE Score', 'TOEFL Score', 'CGPA', 'University Rating', 'Research', 'Chance of Admit ']]
 
 
 def get_linear_regressor(df):
@@ -29,7 +29,9 @@ def get_linear_regressor(df):
         labels, feature, test_size=0.10)
     r = LinearRegression(normalize=True)
     r = r.fit(x_train, y_train)
-    return r
+    trained = 'trained_model_lr.sav'
+    pickle.dump(r, open(trained, 'wb'))
+    return trained
 
 
 def get_rf_regressor(df):
@@ -40,7 +42,9 @@ def get_rf_regressor(df):
     r = RandomForestRegressor(
         n_estimators=100, random_state=42, criterion="mse")
     r = r.fit(x_train, y_train)
-    return r
+    trained = 'trained_model_rf.sav'
+    pickle.dump(r, open(trained, 'wb'))
+    return trained
 
 
 def get_lasso_regressor(df):
@@ -50,7 +54,7 @@ def get_lasso_regressor(df):
         labels, feature, test_size=0.10)
     r = Lasso()
     r = r.fit(x_train, y_train)
-    trained = 'trained_model.sav'
+    trained = 'trained_model_lasso.sav'
     pickle.dump(r, open(trained, 'wb'))
     return trained
 
@@ -73,20 +77,23 @@ if __name__ == '__main__':
 
     pred_dictionary = {}
 
-    clf = get_rf_regressor(df)
-    prediction = clf.predict(user_info)
-    print("Random forest", prediction)
+    trained_file_rf = get_rf_regressor(df)
+    trained_model_rf = pickle.load(open(trained_file_rf, 'rb'))
+    prediction = trained_model_rf.predict(user_info)
+    #print("Random forest", prediction)
     pred_dictionary['rf'] = prediction
 
-    clf = get_linear_regressor(df)
-    prediction = clf.predict(user_info)
-    print("Linear", prediction)
+    trained_file_lr = get_linear_regressor(df)
+    trained_model_lr = pickle.load(open(trained_file_lr, 'rb'))
+    prediction = trained_model_lr.predict(user_info)
+    #print("Linear", prediction)
     pred_dictionary['linear'] = prediction
 
-    trained_file = get_lasso_regressor(df)
-    trained_model = pickle.load(open(trained_file, 'rb'))
-    prediction = trained_model.predict(user_info)
-    print("Lasso", prediction)
+    trained_file_lasso = get_lasso_regressor(df)
+    trained_model_lasso = pickle.load(open(trained_file_lasso, 'rb'))
+    prediction = trained_model_lasso.predict(user_info)
+    #print("Lasso", prediction)
     pred_dictionary['lasso'] = prediction
 
-    print("Result:", min(pred_dictionary.values()))
+    print("Your percentage chance of getting in is:",
+          min(pred_dictionary.values())[0] * 100)
