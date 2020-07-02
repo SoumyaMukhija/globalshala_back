@@ -6,7 +6,6 @@ from progress_data import progress_data
 app = Flask(__name__)
 run_with_ngrok(app)
 
-
 @app.route('/')
 def send_welcome_data():
     data = {"Welcome! Do you want to go abroad to study?": ["Yes", "No", "Maybe"],
