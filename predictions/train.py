@@ -59,41 +59,34 @@ def get_lasso_regressor(df):
     return trained
 
 
-def get_combined_stats(df):
-    return df.groupby("University Rating").mean()
-
-
-if __name__ == '__main__':
+def get_combined_stats(user_data):
     df = get_dataframe_from_file()
     # print(df.shape) 400 rows with 9 columns
     df = clean_data_in_dataframe(df)
     # print(df.shape) 400 rows with 9 columns
     df = remove_additional_columns(df)
     # print(df.shape) 400 rows with 5 columns
-    user_dictionary = {'GRE Score': [325], 'TOEFL Score': [
-        111], 'CGPA': [8.2], 'University Rating': [4], 'Research': [0]}
-    user_info = pd.DataFrame(user_dictionary)
+    # user_data = {'GRE Score': [325], 'TOEFL Score': [111], 'CGPA': [8.2], 'University Rating': [4], 'Research': [0]}
+    user_info = pd.DataFrame(user_data)
     # user = np.array([[325,112,7.5]]).reshape(1, -1)
 
     pred_dictionary = {}
 
-    trained_file_rf = get_rf_regressor(df)
+    # trained_file_rf = get_rf_regressor(df)
     trained_model_rf = pickle.load(open(trained_file_rf, 'rb'))
     prediction = trained_model_rf.predict(user_info)
-    #print("Random forest", prediction)
+    # print("Random forest", prediction)
     pred_dictionary['rf'] = prediction
 
-    trained_file_lr = get_linear_regressor(df)
+    # trained_file_lr = get_linear_regressor(df)
     trained_model_lr = pickle.load(open(trained_file_lr, 'rb'))
     prediction = trained_model_lr.predict(user_info)
-    #print("Linear", prediction)
+    # print("Linear", prediction)
     pred_dictionary['linear'] = prediction
 
-    trained_file_lasso = get_lasso_regressor(df)
+    # trained_file_lasso = get_lasso_regressor(df)
     trained_model_lasso = pickle.load(open(trained_file_lasso, 'rb'))
     prediction = trained_model_lasso.predict(user_info)
-    #print("Lasso", prediction)
+    # print("Lasso", prediction)
     pred_dictionary['lasso'] = prediction
-
-    print("Your percentage chance of getting in is:",
-          min(pred_dictionary.values())[0] * 100)
+    return min(pred_dictionary.values())[0] * 100
