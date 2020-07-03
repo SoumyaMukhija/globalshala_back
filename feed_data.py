@@ -4,8 +4,25 @@
 2 => Contest
 3 => Twitter'''
 
+import twint
+import pandas as pd
+
 
 def feed_data():
+
+    c = twint.Config()
+    c.Username = "TheGlobalshala"
+    c.Store_csv = True
+    c.Custom_csv = ["username", "tweet"]
+    c.Output = "Globalshala_Twitter.csv"
+    c.Limit = 1
+
+    twint.run.Search(c)
+
+    df = pd.read_csv('Globalshala_Twitter.csv', usecols=[
+                     'username', 'tweet', 'urls', 'photos'])
+    print(df)
+
     fd = [
         {
             'type of content': 0,
@@ -30,8 +47,8 @@ def feed_data():
 
         {
             'type of content': 3,
-            'title': 'NorthEastern is ready to welcome you in Fall 2020!',
-            'description': 'Read our latest Twitter post here.',
+            'title': df[0][1],
+            'description': df[0][2] + df[0][3],
             'url': 'https://twitter.com/TheGlobalshala/status/1264135763526062080'
         },
 
@@ -58,9 +75,13 @@ def feed_data():
 
         {
             'type of content': 3,
-            'title': 'Protect biodiversity, Save life on earth.',
-            'description': 'Read our latest Twitter post here.',
+            'title': df[1][1],
+            'description': df[1][2] + df[1][3],
             'url': 'https://twitter.com/TheGlobalshala/status/1263763435717660672'
         }
     ]
+
     return fd
+
+
+feed_data()
