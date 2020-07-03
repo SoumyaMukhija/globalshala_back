@@ -60,10 +60,6 @@ def get_lasso_regressor(df):
 
 
 def get_combined_stats(user_data):
-    # return df.groupby("University Rating").mean()
-
-
-if __name__ == '__main__':
     df = get_dataframe_from_file()
     # print(df.shape) 400 rows with 9 columns
     df = clean_data_in_dataframe(df)
