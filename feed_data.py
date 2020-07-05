@@ -6,22 +6,19 @@
 
 import twint
 import pandas as pd
+from random import randrange
 
+def get_random_tweet():
+    df = pd.read_csv('predictions/Globalshala_Twitter.csv')
+    tweet_data = df.iloc[randrange(len(df))]
+    tweet = tweet_data[['tweet', 'link', 'name']]
+    return tweet
 
 def feed_data():
-
-    c = twint.Config()
-    c.Username = "TheGlobalshala"
-    c.Store_csv = True
-    c.Custom_csv = ["username", "tweet"]
-    c.Output = "Globalshala_Twitter.csv"
-    c.Limit = 1
-
-    twint.run.Search(c)
-
-    df = pd.read_csv('Globalshala_Twitter.csv', usecols=[
-                     'username', 'tweet', 'urls', 'photos'])
-    print(df)
+    
+    tweets = list()
+    for i in range(3):
+        tweets.append(get_random_tweet())
 
     fd = [
         {
@@ -47,9 +44,9 @@ def feed_data():
 
         {
             'type of content': 3,
-            'title': df[0][1],
-            'description': df[0][2] + df[0][3],
-            'url': 'https://twitter.com/TheGlobalshala/status/1264135763526062080'
+            'title': tweets[0]['tweet'],
+            'description': "@"+tweets[0]['name'],
+            'url': tweets[0]['link']
         },
 
         {
@@ -75,13 +72,13 @@ def feed_data():
 
         {
             'type of content': 3,
-            'title': df[1][1],
-            'description': df[1][2] + df[1][3],
-            'url': 'https://twitter.com/TheGlobalshala/status/1263763435717660672'
+            'title': tweets[1]['tweet'],
+            'description': "@"+tweets[0]['name'],
+            'url': tweets[1]['link']
         }
     ]
 
     return fd
 
 
-feed_data()
+get_random_tweet()
