@@ -90,3 +90,23 @@ def get_combined_stats(user_data):
     # print("Lasso", prediction)
     pred_dictionary['lasso'] = prediction
     return min(pred_dictionary.values())[0] * 100
+
+def get_predictions(user_info):
+    trained_model_rf = pickle.load(open(trained_file_rf, 'rb'))
+    prediction = trained_model_rf.predict(user_info)
+    # print("Random forest", prediction)
+    pred_dictionary['rf'] = prediction
+
+    # trained_file_lr = get_linear_regressor(df)
+    trained_model_lr = pickle.load(open(trained_file_lr, 'rb'))
+    prediction = trained_model_lr.predict(user_info)
+    # print("Linear", prediction)
+    pred_dictionary['linear'] = prediction
+
+    # trained_file_lasso = get_lasso_regressor(df)
+    trained_model_lasso = pickle.load(open(trained_file_lasso, 'rb'))
+    prediction = trained_model_lasso.predict(user_info)
+    # print("Lasso", prediction)
+    pred_dictionary['lasso'] = prediction
+    return min(pred_dictionary.values())[0] * 100
+

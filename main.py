@@ -22,6 +22,18 @@ def send_uni_data():
     return ud
 
 
+@app.route("/predict", methods=['POST'])
+def predict():
+    # Fetch data frontend
+    data = request.form
+
+    # Uni rate
+
+    # Data values to dictionary - (gre, toefl, cgpa, research, uni ranking)
+    # user_data = {'GRE Score': [gre], 'TOEFL Score': [toefl], 'CGPA': [8.2], 'University Rating': [4], 'Research': [0]}
+    
+    # Predict - .sav using get_predictions from train.py
+
 @app.route('/feed_data/', methods=['POST', 'GET'])
 def send_feed_data():
     fd = {"feed data": feed_data()}
