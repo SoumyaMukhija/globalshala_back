@@ -36,3 +36,4 @@ def univ_data():
         {"Montana State University": 1},
         {"North Dakota State University": 1}
     ]
+    return uni_data

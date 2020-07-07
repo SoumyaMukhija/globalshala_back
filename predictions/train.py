@@ -70,21 +70,21 @@ def get_combined_stats(user_data):
     user_info = pd.DataFrame(user_data)
     # user = np.array([[325,112,7.5]]).reshape(1, -1)
 
-    pred_dictionary = {}
 
-    # trained_file_rf = get_rf_regressor(df)
+def predict_data(pred_dictionary):
+    trained_file_rf = get_rf_regressor(df)
     trained_model_rf = pickle.load(open(trained_file_rf, 'rb'))
     prediction = trained_model_rf.predict(user_info)
     # print("Random forest", prediction)
     pred_dictionary['rf'] = prediction
 
-    # trained_file_lr = get_linear_regressor(df)
+    trained_file_lr = get_linear_regressor(df)
     trained_model_lr = pickle.load(open(trained_file_lr, 'rb'))
     prediction = trained_model_lr.predict(user_info)
     # print("Linear", prediction)
     pred_dictionary['linear'] = prediction
 
-    # trained_file_lasso = get_lasso_regressor(df)
+    trained_file_lasso = get_lasso_regressor(df)
     trained_model_lasso = pickle.load(open(trained_file_lasso, 'rb'))
     prediction = trained_model_lasso.predict(user_info)
     # print("Lasso", prediction)
