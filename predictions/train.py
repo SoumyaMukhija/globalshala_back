@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
@@ -29,9 +30,9 @@ def get_linear_regressor(df):
         labels, feature, test_size=0.10)
     r = LinearRegression(normalize=True)
     r = r.fit(x_train, y_train)
-    trained = 'trained_model_lr.sav'
-    pickle.dump(r, open(trained, 'wb'))
-    return trained
+    with open('lr.pkl', 'wb') as out:
+        pickle.dump(r,out)
+    return r
 
 
 def get_rf_regressor(df):
@@ -42,9 +43,9 @@ def get_rf_regressor(df):
     r = RandomForestRegressor(
         n_estimators=100, random_state=42, criterion="mse")
     r = r.fit(x_train, y_train)
-    trained = 'trained_model_rf.sav'
-    pickle.dump(r, open(trained, 'wb'))
-    return trained
+    with open('rf.pkl', 'wb') as out:
+        pickle.dump(r,out)
+    return r
 
 
 def get_lasso_regressor(df):
@@ -54,59 +55,40 @@ def get_lasso_regressor(df):
         labels, feature, test_size=0.10)
     r = Lasso()
     r = r.fit(x_train, y_train)
-    trained = 'trained_model_lasso.sav'
-    pickle.dump(r, open(trained, 'wb'))
-    return trained
+    with open('ls.pkl', 'wb') as out:
+        pickle.dump(r,out)
+    return r
 
 
-def get_combined_stats(user_data):
+def save_regressors():
+
     df = get_dataframe_from_file()
-    # print(df.shape) 400 rows with 9 columns
     df = clean_data_in_dataframe(df)
-    # print(df.shape) 400 rows with 9 columns
     df = remove_additional_columns(df)
-    # print(df.shape) 400 rows with 5 columns
-    # user_data = {'GRE Score': [325], 'TOEFL Score': [111], 'CGPA': [8.2], 'University Rating': [4], 'Research': [0]}
-    user_info = pd.DataFrame(user_data)
-    # user = np.array([[325,112,7.5]]).reshape(1, -1)
 
-    pred_dictionary = {}
+    get_linear_regressor(df)
+    get_rf_regressor(df)
+    get_lasso_regressor(df)
 
-    # trained_file_rf = get_rf_regressor(df)
-    trained_model_rf = pickle.load(open(trained_file_rf, 'rb'))
-    prediction = trained_model_rf.predict(user_info)
-    # print("Random forest", prediction)
-    pred_dictionary['rf'] = prediction
 
-    # trained_file_lr = get_linear_regressor(df)
-    trained_model_lr = pickle.load(open(trained_file_lr, 'rb'))
-    prediction = trained_model_lr.predict(user_info)
-    # print("Linear", prediction)
-    pred_dictionary['linear'] = prediction
+def read_regressors_and_predict(user_info):
+    predictions = {}
+    usr = pd.DataFrame(user_info)
+    
+    abspath = os.path.abspath('predictions/lr.pkl')
+    with open(abspath, 'rb') as fin:
+        r = pickle.load(fin)
+        predictions['lr'] = r.predict(usr)
 
-    # trained_file_lasso = get_lasso_regressor(df)
-    trained_model_lasso = pickle.load(open(trained_file_lasso, 'rb'))
-    prediction = trained_model_lasso.predict(user_info)
-    # print("Lasso", prediction)
-    pred_dictionary['lasso'] = prediction
-    return min(pred_dictionary.values())[0] * 100
+    abspath = os.path.abspath('predictions/rf.pkl')
+    with open(abspath, 'rb') as fin:
+        r = pickle.load(fin)
+        predictions['rf'] = r.predict(usr)
 
-def get_predictions(user_info):
-    trained_model_rf = pickle.load(open(trained_file_rf, 'rb'))
-    prediction = trained_model_rf.predict(user_info)
-    # print("Random forest", prediction)
-    pred_dictionary['rf'] = prediction
+    abspath = os.path.abspath('predictions/ls.pkl')
+    with open(abspath, 'rb') as fin:
+        r = pickle.load(fin)
+        predictions['lasso'] = r.predict(usr)
 
-    # trained_file_lr = get_linear_regressor(df)
-    trained_model_lr = pickle.load(open(trained_file_lr, 'rb'))
-    prediction = trained_model_lr.predict(user_info)
-    # print("Linear", prediction)
-    pred_dictionary['linear'] = prediction
-
-    # trained_file_lasso = get_lasso_regressor(df)
-    trained_model_lasso = pickle.load(open(trained_file_lasso, 'rb'))
-    prediction = trained_model_lasso.predict(user_info)
-    # print("Lasso", prediction)
-    pred_dictionary['lasso'] = prediction
-    return min(pred_dictionary.values())[0] * 100
-
+    minval = min(predictions.values())
+    return str(round(minval[0] * 100, 2))
