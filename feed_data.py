@@ -8,14 +8,16 @@ import twint
 import pandas as pd
 from random import randrange
 
+
 def get_random_tweet():
     df = pd.read_csv('predictions/Globalshala_Twitter.csv')
     tweet_data = df.iloc[randrange(len(df))]
     tweet = tweet_data[['tweet', 'link', 'name']]
     return tweet
 
+
 def feed_data():
-    
+
     tweets = list()
     for i in range(3):
         tweets.append(get_random_tweet())

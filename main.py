@@ -50,6 +50,12 @@ def send_feed_data():
     return fd
 
 
+@app.route('/take_prediction_data/', methods=['POST', 'GET'])
+def take_prediction_data(response):
+    data = response.json()
+    print(data)
+
+
 @app.route('/univ_prediction/', methods=['POST', 'GET'])
 def send_prediction_data(user_data):
     #chance = get_combined_stats(user_data)
